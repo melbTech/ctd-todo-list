@@ -3,7 +3,7 @@ function TodoForm() {
     <form action="">
       <label htmlFor="todoTitle">Todo</label>
       <input type="text" id="todoTitle" />
-      <button>Add Todo</button>
+      <button type="submit">Add Todo</button>
     </form>
   );
 }
