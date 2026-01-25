@@ -2,15 +2,20 @@ import { useRef } from 'react';
 import { useState } from 'react';
 import TextInputWithLabel from '../shared/TextInputWithLabel';
 
-function TodoForm(props) {
+function TodoForm({ onAddTodo, isSaving }) {
   const todoTitleInput = useRef('');
   const [workingTodoTitle, setWorkingTodo] = useState('');
 
   function handleAddTodo(event) {
     // prevent the page from refreshing when a user clicks the Add Todo button
     event.preventDefault();
-    const title = event.target.title.value;
-    props.onAddTodo(workingTodoTitle);
+
+    const newTodo = {
+      title: workingTodoTitle,
+      isCompleted: false,
+    };
+
+    onAddTodo(newTodo);
     setWorkingTodo('');
 
     todoTitleInput.current.focus();
@@ -27,7 +32,7 @@ function TodoForm(props) {
       />
 
       <button type="submit" disabled={workingTodoTitle === ''}>
-        Add Todo
+        {isSaving ? 'Saving...' : 'Add Todo'}
       </button>
     </form>
   );
