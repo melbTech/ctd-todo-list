@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextInputWithLabel from '../../shared/TextInputWithLabel';
 
 function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
   const [isEditing, setIsEditing] = useState(false);
   const [workingTitle, setWorkingTitle] = useState(todo.title);
+
+  useEffect(() => {
+    setWorkingTitle(todo.title);
+  }, [todo]);
 
   function handleCancel() {
     setWorkingTitle(todo.title);
@@ -15,9 +19,8 @@ function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
   }
 
   function handleUpdate(event) {
-    if (isEditing === false) return;
-
     event.preventDefault();
+    if (isEditing === false) return;
 
     onUpdateTodo({
       ...todo,
@@ -25,8 +28,6 @@ function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
     });
     setIsEditing(false);
   }
-
-  console.log('onUpdateTodo in TodoListItem:', onUpdateTodo);
 
   return (
     <li>
