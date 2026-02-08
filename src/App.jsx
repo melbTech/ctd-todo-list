@@ -1,20 +1,10 @@
 import './App.css';
 import TodoList from './features/TodoList/TodoList.jsx';
 import TodoForm from './features/TodoForm.jsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import TodoViewForm from './features/TodosViewForm.jsx';
 
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
-
-// Utility function
-const encodeUrl = ({ sortField, sortDirection, queryString }) => {
-  let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-  let searchQuery = '';
-  if (queryString) {
-    searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
-  }
-  return encodeURI(`${url}?${sortQuery}${searchQuery}`);
-};
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -27,10 +17,14 @@ function App() {
 
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
-  console.log('Airtable URL:', url);
-  console.log('PAT exists:', Boolean(import.meta.env.VITE_PAT));
-  console.log('Base ID exists:', Boolean(import.meta.env.VITE_BASE_ID));
-  console.log('Table name exists:', Boolean(import.meta.env.VITE_TABLE_NAME));
+  const encodeUrl = useCallback(() => {
+    let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+    let searchQuery = '';
+    if (queryString) {
+      searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+    }
+    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+  }, [sortField, sortDirection, queryString]);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -44,10 +38,7 @@ function App() {
       };
 
       try {
-        const resp = await fetch(
-          encodeUrl({ sortField, sortDirection, queryString }),
-          options
-        );
+        const resp = await fetch(encodeUrl(), options);
         if (!resp.ok) {
           throw new Error(resp.statusText || `Request failed: ${resp.status}`);
         }
@@ -81,7 +72,7 @@ function App() {
       }
     };
     fetchTodos();
-  }, [sortField, sortDirection, queryString]);
+  }, [encodeUrl, token]);
 
   const addTodo = async (newTodo) => {
     const payload = {
@@ -107,10 +98,7 @@ function App() {
     try {
       setIsSaving(true);
 
-      const resp = await fetch(
-        encodeUrl({ sortField, sortDirection, queryString }),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.statusText || `Request failed: ${resp.status}`);
       }
@@ -169,10 +157,7 @@ function App() {
 
     try {
       setIsSaving(true);
-      const resp = await fetch(
-        encodeUrl({ sortField, sortDirection, queryString }),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.statusText || `Request failed: ${resp.status}`);
       }
@@ -221,10 +206,7 @@ function App() {
     try {
       setIsSaving(true);
 
-      const resp = await fetch(
-        encodeUrl({ sortField, sortDirection, queryString }),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
 
       if (!resp.ok) {
         throw new Error(resp.statusText || `Request failed: ${resp.status}`);
