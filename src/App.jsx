@@ -3,6 +3,7 @@ import TodoList from './features/TodoList/TodoList.jsx';
 import TodoForm from './features/TodoForm.jsx';
 import { useEffect, useState, useCallback } from 'react';
 import TodoViewForm from './features/TodosViewForm.jsx';
+import styles from './App.module.css';
 
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
@@ -225,37 +226,39 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>My Todos</h1>
-      <TodoForm onAddTodo={addTodo} isSaving={isSaving}></TodoForm>
+    <div className={styles.appContainer}>
+      <div className={styles.card}>
+        <h1>My Todos</h1>
+        <TodoForm onAddTodo={addTodo} isSaving={isSaving}></TodoForm>
 
-      <TodoList
-        todoList={todoList}
-        onCompleteTodo={completeTodo}
-        onUpdateTodo={updateTodo}
-        isLoading={isLoading}
-      ></TodoList>
+        <TodoList
+          todoList={todoList}
+          onCompleteTodo={completeTodo}
+          onUpdateTodo={updateTodo}
+          isLoading={isLoading}
+        ></TodoList>
 
-      <hr />
+        <hr />
 
-      <TodoViewForm
-        sortField={sortField}
-        setSortField={setSortField}
-        sortDirection={sortDirection}
-        setSortDirection={setSortDirection}
-        queryString={queryString}
-        setQueryString={setQueryString}
-      />
+        <TodoViewForm
+          sortField={sortField}
+          setSortField={setSortField}
+          sortDirection={sortDirection}
+          setSortDirection={setSortDirection}
+          queryString={queryString}
+          setQueryString={setQueryString}
+        />
 
-      {errorMessage && (
-        <div>
-          <hr />
-          <p>{errorMessage}</p>
-          <button type="button" onClick={() => setErrorMessage('')}>
-            Dismiss
-          </button>
-        </div>
-      )}
+        {errorMessage && (
+          <div className={styles.error}>
+            <hr />
+            <p>{errorMessage}</p>
+            <button type="button" onClick={() => setErrorMessage('')}>
+              Dismiss
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
