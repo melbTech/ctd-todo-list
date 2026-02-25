@@ -1,4 +1,33 @@
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+const StyledForm = styled.form`
+  padding: 8px 0px;
+`;
+
+const StyledSearch = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+  margin-bottom: 10px;
+`;
+
+const StyledSort = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const StyledInput = styled.input`
+  font-size: 14px;
+  padding: 6px;
+  width: 85%;
+`;
+
+const StyledButton = styled.button`
+  padding: 4px 10px;
+  font-size: 20px;
+`;
 
 function TodosViewForm({
   sortField,
@@ -19,30 +48,31 @@ function TodosViewForm({
   }, [localQueryString, setQueryString]);
 
   return (
-    <form className="filterForm" onSubmit={preventRefresh}>
+    <StyledForm className="filterForm" onSubmit={preventRefresh}>
       {/* Search Todos */}
-      <div className="FilterOptions">
-        <label htmlFor="searchTodos">Search todos</label>
-        <input
+      <StyledSearch className="FilterOptions">
+        {/* <label htmlFor="searchTodos">Search todos</label> */}
+        <StyledInput
           id="searchTodos"
           type="text"
+          placeholder="Search todo.."
           value={localQueryString}
           onChange={(e) => {
             setLocalQueryString(e.target.value);
           }}
         />
-        <button
+        <StyledButton
           type="button"
           onClick={() => {
             setLocalQueryString('');
           }}
         >
-          Clear
-        </button>
-      </div>
+          x
+        </StyledButton>
+      </StyledSearch>
 
       {/* Sort Todos */}
-      <div>
+      <StyledSort>
         <label htmlFor="sortField">Sort by</label>
         <select
           name="sortField"
@@ -55,7 +85,9 @@ function TodosViewForm({
           <option value="title">Title</option>
           <option value="createdTime">Time added</option>
         </select>
-        <label htmlFor="sortDirection">Direction</label>
+        <label id="left" htmlFor="sortDirection">
+          Direction
+        </label>
         <select
           name="sortDirection"
           id="sortDirection"
@@ -67,8 +99,8 @@ function TodosViewForm({
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
-      </div>
-    </form>
+      </StyledSort>
+    </StyledForm>
   );
 }
 
