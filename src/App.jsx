@@ -1,9 +1,11 @@
 import './App.css';
-import TodoList from './features/TodoList/TodoList.jsx';
-import TodoForm from './features/TodoForm.jsx';
 import { useEffect, useState, useCallback, useReducer } from 'react';
-import TodoViewForm from './features/TodosViewForm.jsx';
 import styles from './App.module.css';
+import TodosPage from './pages/TodosPage.jsx';
+import Header from './shared/Header.jsx';
+import { Routes, Route, useLocation } from 'react-router';
+import About from './pages/About.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 import {
   reducer as todosReducer,
@@ -20,6 +22,15 @@ function App() {
   const [todoState, dispatch] = useReducer(todosReducer, initialTodosState);
 
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
+
+  const location = useLocation();
+  const [title, setTitle] = useState('Todo List');
+
+  useEffect(() => {
+    if (location.pathname === '/') setTitle('Todo List');
+    else if (location.pathname === '/about') setTitle('About');
+    else setTitle('Not Found');
+  }, [location]);
 
   const encodeUrl = useCallback(() => {
     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
@@ -194,41 +205,47 @@ function App() {
   };
 
   return (
-    <div className={styles.appContainer}>
-      <div className={styles.card}>
-        <h1>My Todos</h1>
-        <TodoForm onAddTodo={addTodo} isSaving={todoState.isSaving}></TodoForm>
+    <div className={styles.page}>
+      <Header title={title}></Header>
+      <div className={styles.appContainer}>
+        <div className={styles.card}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <TodosPage
+                  todoState={todoState}
+                  dispatch={dispatch}
+                  addTodo={addTodo}
+                  completeTodo={completeTodo}
+                  updateTodo={updateTodo}
+                  sortField={sortField}
+                  setSortField={setSortField}
+                  sortDirection={sortDirection}
+                  setSortDirection={setSortDirection}
+                  queryString={queryString}
+                  setQueryString={setQueryString}
+                />
+              }
+            />
 
-        <TodoList
-          todoList={todoState.todoList}
-          onCompleteTodo={completeTodo}
-          onUpdateTodo={updateTodo}
-          isLoading={todoState.isLoading}
-        ></TodoList>
+            <Route path="/about" element={<About></About>}></Route>
+            <Route path="/*" element={<NotFound></NotFound>}></Route>
+          </Routes>
 
-        <hr />
-
-        <TodoViewForm
-          sortField={sortField}
-          setSortField={setSortField}
-          sortDirection={sortDirection}
-          setSortDirection={setSortDirection}
-          queryString={queryString}
-          setQueryString={setQueryString}
-        />
-
-        {todoState.errorMessage && (
-          <div className={styles.error}>
-            <hr />
-            <p>{todoState.errorMessage}</p>
-            <button
-              type="button"
-              onClick={() => dispatch({ type: todoActions.clearError })}
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
+          {todoState.errorMessage && (
+            <div className={styles.error}>
+              <hr />
+              <p>{todoState.errorMessage}</p>
+              <button
+                type="button"
+                onClick={() => dispatch({ type: todoActions.clearError })}
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
