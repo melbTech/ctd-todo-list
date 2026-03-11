@@ -1,0 +1,11 @@
+.notFound {
+  display: grid;
+  gap: 8;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}

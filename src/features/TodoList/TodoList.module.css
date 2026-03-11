@@ -3,3 +3,11 @@
   list-style-type: none;
   font-family: Inter, sans-serif;
 }
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+}
